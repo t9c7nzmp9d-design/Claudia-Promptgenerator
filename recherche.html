@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment-Analyse Prompt Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f1a;
+    --surface: #141829;
+    --surface-2: #1a1f36;
+    --surface-3: #222842;
+    --border: #2a305a;
+    --border-glow: #3b44cc;
+    --text: #e4e6f0;
+    --text-dim: #8a8fb5;
+    --text-muted: #5c6190;
+    --accent: #6366f1;
+    --accent-bright: #818cf8;
+    --accent-glow: rgba(99,102,241,0.25);
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.15);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+line-height: 1.6;
+}
+
+/* Subtle grid background */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background:
+linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+background-size: 60px 60px;
+pointer-events: none;
+z-index: 0;
+}
+
+.container {
+position: relative;
+z-index: 1;
+max-width: 860px;
+margin: 0 auto;
+padding: 40px 24px 80px;
+}
+
+/* ── Header ── */
+.header {
+text-align: center;
+margin-bottom: 48px;
+position: relative;
+}
+
+.header::after {
+content: ‘’;
+position: absolute;
+bottom: -24px;
+left: 50%;
+transform: translateX(-50%);
+width: 120px;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(–accent), transparent);
+}
+
+.header .tag {
+display: inline-block;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–accent-bright);
+background: var(–accent-glow);
+border: 1px solid rgba(99,102,241,0.3);
+padding: 6px 16px;
+border-radius: 20px;
+margin-bottom: 20px;
+}
+
+.header h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(28px, 5vw, 42px);
+font-weight: 800;
+line-height: 1.15;
+background: linear-gradient(135deg, #e4e6f0 30%, var(–accent-bright));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.header p {
+color: var(–text-dim);
+margin-top: 12px;
+font-size: 15px;
+max-width: 520px;
+margin-inline: auto;
+}
+
+/* ── Sections ── */
+.section {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 28px;
+margin-bottom: 20px;
+transition: border-color 0.3s;
+}
+
+.section:hover {
+border-color: var(–border-glow);
+}
+
+.section-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 2.5px;
+text-transform: uppercase;
+color: var(–accent-bright);
+margin-bottom: 16px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.section-label .num {
+background: var(–accent);
+color: white;
+width: 22px;
+height: 22px;
+border-radius: 6px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 11px;
+font-weight: 700;
+}
+
+/* ── Form fields ── */
+.field-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+}
+
+.field-grid .full { grid-column: 1 / -1; }
+
+.field {
+display: flex;
+flex-direction: column;
+gap: 5px;
+}
+
+.field label {
+font-size: 12px;
+font-weight: 500;
+color: var(–text-dim);
+letter-spacing: 0.3px;
+}
+
+.field input,
+.field select,
+.field textarea {
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px;
+color: var(–text);
+background: var(–surface-2);
+border: 1px solid var(–border);
+border-radius: var(–radius-sm);
+padding: 10px 14px;
+outline: none;
+transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+border-color: var(–accent);
+box-shadow: 0 0 0 3px var(–accent-glow);
+}
+
+.field select { cursor: pointer; }
+
+.field input::placeholder { color: var(–text-muted); }
+
+/* ── Module toggles ── */
+.modules-grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 10px;
+}
+
+.module {
+background: var(–surface-2);
+border: 1px solid var(–border);
+border-radius: var(–radius-sm);
+padding: 16px 18px;
+transition: all 0.3s;
+cursor: pointer;
+}
+
+.module:hover {
+border-color: var(–border-glow);
+background: var(–surface-3);
+}
+
+.module.active {
+border-color: var(–accent);
+background: rgba(99,102,241,0.06);
+box-shadow: 0 0 0 1px var(–accent-glow);
+}
+
+.module-header {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.toggle {
+position: relative;
+width: 44px;
+height: 24px;
+flex-shrink: 0;
+}
+
+.toggle input {
+opacity: 0;
+width: 0;
+height: 0;
+position: absolute;
+}
+
+.toggle-track {
+position: absolute;
+inset: 0;
+background: var(–surface-3);
+border-radius: 12px;
+border: 1px solid var(–border);
+transition: all 0.3s;
+cursor: pointer;
+}
+
+.toggle-track::after {
+content: ‘’;
+position: absolute;
+top: 3px;
+left: 3px;
+width: 16px;
+height: 16px;
+background: var(–text-muted);
+border-radius: 50%;
+transition: all 0.3s;
+}
+
+.toggle input:checked + .toggle-track {
+background: var(–accent);
+border-color: var(–accent);
+}
+
+.toggle input:checked + .toggle-track::after {
+transform: translateX(20px);
+background: white;
+}
+
+.module-title {
+font-weight: 700;
+font-size: 14px;
+flex-grow: 1;
+}
+
+.module-desc {
+color: var(–text-dim);
+font-size: 12.5px;
+margin-top: 8px;
+padding-left: 56px;
+line-height: 1.5;
+}
+
+.module-options {
+margin-top: 12px;
+padding-left: 56px;
+display: none;
+}
+
+.module.active .module-options { display: block; }
+
+.module-options .field {
+margin-bottom: 8px;
+}
+
+.module-options input,
+.module-options select {
+font-size: 13px;
+padding: 7px 10px;
+background: var(–surface);
+}
+
+/* ── Checkbox group ── */
+.check-group {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+}
+
+.check-item {
+display: flex;
+align-items: center;
+gap: 8px;
+cursor: pointer;
+font-size: 13px;
+}
+
+.check-item input[type=“checkbox”] {
+appearance: none;
+width: 18px;
+height: 18px;
+border: 1.5px solid var(–border);
+border-radius: 5px;
+background: var(–surface-2);
+cursor: pointer;
+position: relative;
+transition: all 0.2s;
+flex-shrink: 0;
+}
+
+.check-item input[type=“checkbox”]:checked {
+background: var(–accent);
+border-color: var(–accent);
+}
+
+.check-item input[type=“checkbox”]:checked::after {
+content: ‘✓’;
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+font-size: 12px;
+font-weight: 700;
+}
+
+/* ── Radio pills ── */
+.radio-pills {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.radio-pill {
+position: relative;
+}
+
+.radio-pill input {
+position: absolute;
+opacity: 0;
+}
+
+.radio-pill label {
+display: inline-block;
+padding: 7px 16px;
+font-size: 13px;
+font-weight: 500;
+border: 1px solid var(–border);
+border-radius: 20px;
+cursor: pointer;
+transition: all 0.25s;
+color: var(–text-dim);
+background: var(–surface-2);
+}
+
+.radio-pill input:checked + label {
+background: var(–accent);
+border-color: var(–accent);
+color: white;
+}
+
+.radio-pill label:hover {
+border-color: var(–accent-bright);
+}
+
+/* ── Generate Button ── */
+.generate-btn {
+display: block;
+width: 100%;
+padding: 16px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+letter-spacing: 0.5px;
+color: white;
+background: linear-gradient(135deg, var(–accent), #4f46e5);
+border: none;
+border-radius: var(–radius);
+cursor: pointer;
+transition: all 0.3s;
+position: relative;
+overflow: hidden;
+}
+
+.generate-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 30px var(–accent-glow);
+}
+
+.generate-btn:active { transform: translateY(0); }
+
+/* ── Output ── */
+.output-section {
+display: none;
+margin-top: 24px;
+}
+
+.output-section.visible { display: block; }
+
+.output-box {
+position: relative;
+background: var(–surface);
+border: 1px solid var(–green);
+border-radius: var(–radius);
+overflow: hidden;
+}
+
+.output-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px 18px;
+background: var(–green-dim);
+border-bottom: 1px solid rgba(52,211,153,0.2);
+}
+
+.output-header span {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–green);
+}
+
+.copy-btn {
+font-family: ‘DM Sans’, sans-serif;
+font-size: 13px;
+font-weight: 600;
+color: var(–green);
+background: transparent;
+border: 1px solid var(–green);
+border-radius: 6px;
+padding: 6px 14px;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.copy-btn:hover {
+background: var(–green);
+color: var(–bg);
+}
+
+.output-text {
+padding: 20px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 13px;
+line-height: 1.7;
+color: var(–text);
+white-space: pre-wrap;
+max-height: 500px;
+overflow-y: auto;
+}
+
+.output-text::-webkit-scrollbar { width: 6px; }
+.output-text::-webkit-scrollbar-track { background: transparent; }
+.output-text::-webkit-scrollbar-thumb { background: var(–border); border-radius: 3px; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+.field-grid { grid-template-columns: 1fr; }
+.container { padding: 24px 16px 60px; }
+.section { padding: 20px; }
+.module-desc, .module-options { padding-left: 0; margin-top: 12px; }
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+
+  <div class="header">
+    <div class="tag">Werkzeugkasten</div>
+    <h1>Investment-Analyse<br>Prompt Generator</h1>
+    <p>Fülle die Felder aus, wähle deine Module und generiere einen fertigen Prompt für Claude.</p>
+  </div>
+
+  <!-- 1. ASSET-DEFINITION -->
+
+  <div class="section">
+    <div class="section-label"><span class="num">1</span> Asset-Definition</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Typ</label>
+        <select id="assetType">
+          <option value="Einzelaktie">Einzelaktie</option>
+          <option value="ETF">ETF</option>
+          <option value="Fonds">Fonds</option>
+          <option value="Musterdepot" selected>Musterdepot</option>
+          <option value="Mehrere ETFs">Mehrere ETFs</option>
+          <option value="Mehrere Aktien">Mehrere Aktien</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Bezeichnung(en)</label>
+        <input type="text" id="assetName" placeholder="z.B. Walmart, MSCI World ETF…">
+      </div>
+      <div class="field">
+        <label>WKN / ISIN (kommagetrennt)</label>
+        <input type="text" id="assetWKN" placeholder="z.B. 860853, A1JX52">
+      </div>
+      <div class="field">
+        <label>Datei-Upload?</label>
+        <select id="assetFile">
+          <option value="">Keine Datei</option>
+          <option value="Depot-Auszug als Anhang">Depot-Auszug als Anhang</option>
+          <option value="CSV-Datei als Anhang">CSV-Datei als Anhang</option>
+          <option value="PDF-Auszug als Anhang">PDF-Auszug als Anhang</option>
+          <option value="Screenshot als Anhang">Screenshot als Anhang</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. INVESTOREN-PROFIL -->
+
+  <div class="section">
+    <div class="section-label"><span class="num">2</span> Investoren-Profil</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Aktuelle Position (EUR)</label>
+        <input type="text" id="position" placeholder="z.B. 6.800 EUR oder je 4.500 EUR">
+      </div>
+      <div class="field">
+        <label>Sparplan-Betrag</label>
+        <input type="text" id="sparplan" placeholder="z.B. 100 EUR">
+      </div>
+      <div class="field">
+        <label>Sparplan-Intervall</label>
+        <select id="interval">
+          <option value="">– nicht angeben –</option>
+          <option value="wöchentlich">Wöchentlich</option>
+          <option value="monatlich" selected>Monatlich</option>
+          <option value="quartalsweise">Quartalsweise</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Anlagehorizont</label>
+        <select id="horizon">
+          <option value="1 Jahr">1 Jahr</option>
+          <option value="2 Jahre">2 Jahre</option>
+          <option value="5 Jahre" selected>5 Jahre</option>
+          <option value="10 Jahre">10 Jahre</option>
+          <option value="15 Jahre">15 Jahre</option>
+          <option value="20+ Jahre">20+ Jahre</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label>Ausschüttungsstrategie</label>
+        <div class="radio-pills">
+          <div class="radio-pill">
+            <input type="radio" name="distribution" id="dist_thes" value="Thesaurierend" checked>
+            <label for="dist_thes">Thesaurierend</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="distribution" id="dist_reinvest" value="Reinvestition">
+            <label for="dist_reinvest">Reinvestition</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="distribution" id="dist_balance" value="Manuelle Balancierung">
+            <label for="dist_balance">Manuelle Balancierung</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="distribution" id="dist_auszahl" value="Auszahlung">
+            <label for="dist_auszahl">Auszahlung</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ANALYSE-MODULE -->
+
+  <div class="section">
+    <div class="section-label"><span class="num">3</span> Analyse-Module</div>
+    <div class="modules-grid">
+
+```
+  <!-- Chancen & Risiken -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_chances" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Chancen und Risiken</span>
+    </div>
+    <div class="module-desc">Allgemeine Bewertung der Investmentidee</div>
+  </div>
+
+  <!-- Analystenmeinungen -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_analysts" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Analystenmeinungen</span>
+    </div>
+    <div class="module-desc">Konsens, Kursziele, aktuelle Einschätzungen</div>
+    <div class="module-options">
+      <div class="field">
+        <label>Scope</label>
+        <select id="analystScope">
+          <option value="Top 50 Positionen">Top 50 Positionen</option>
+          <option value="Top 30 Positionen">Top 30 Positionen</option>
+          <option value="Top 10 Positionen">Top 10 Positionen</option>
+          <option value="Alle Positionen">Alle Positionen</option>
+          <option value="Nur Hauptwert">Nur Hauptwert</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ausblick -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_outlook" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Ausblick / Prognose</span>
+    </div>
+    <div class="module-desc">Zeithorizonte mit Bull / Base / Bear Case</div>
+    <div class="module-options">
+      <div class="field">
+        <label>Zeithorizonte (kommagetrennt)</label>
+        <input type="text" id="outlookYears" value="2, 5" placeholder="z.B. 2, 5, 10, 20">
+      </div>
+    </div>
+  </div>
+
+  <!-- Klumpenrisiko -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_cluster" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Klumpenrisiko / Überschneidungsanalyse</span>
+    </div>
+    <div class="module-desc">Matrix der Positionen, farbliche Markierung, Gewichtung in %</div>
+    <div class="module-options">
+      <div class="field">
+        <label>Schwelle (mind. % Gesamtgewichtung)</label>
+        <input type="text" id="clusterThreshold" value="0,5" placeholder="z.B. 0,5">
+      </div>
+    </div>
+  </div>
+
+  <!-- Top & Risiko Positionen -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_topbottom" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Top- und Risiko-Positionen</span>
+    </div>
+    <div class="module-desc">Stärkste & riskanteste Positionen auflisten</div>
+    <div class="module-options">
+      <div class="field">
+        <label>Anzahl je Kategorie</label>
+        <select id="topCount">
+          <option value="10">Top 10 / Risiko 10</option>
+          <option value="20" selected>Top 20 / Risiko 20</option>
+          <option value="30">Top 30 / Risiko 30</option>
+          <option value="50">Top 50 / Risiko 50</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resilienztest -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_resilience" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Resilienztest</span>
+    </div>
+    <div class="module-desc">Stressszenarien (Crash, Rezession, Zinswende), historische Drawdowns</div>
+  </div>
+
+  <!-- Eigentümerstruktur -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_ownership" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Eigentümerstruktur</span>
+    </div>
+    <div class="module-desc">Institutionelle vs. private Anleger, Insider-Transaktionen</div>
+    <div class="module-options">
+      <div class="field">
+        <label>Scope</label>
+        <select id="ownerScope">
+          <option value="Top 10 Titel" selected>Top 10 Titel</option>
+          <option value="Top 20 Titel">Top 20 Titel</option>
+          <option value="Alle Titel">Alle Titel</option>
+          <option value="Nur Hauptwert">Nur Hauptwert</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kennzahlen -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_metrics" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Kennzahlen-Tabelle</span>
+    </div>
+    <div class="module-desc">KGV, KBV, Dividendenrendite, Volatilität etc. mit Erklärung</div>
+    <div class="module-options">
+      <div class="field">
+        <label>Scope</label>
+        <select id="metricsScope">
+          <option value="Top 10 Titel" selected>Top 10 Titel</option>
+          <option value="Top 20 Titel">Top 20 Titel</option>
+          <option value="Alle Titel">Alle Titel</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wertentwicklung -->
+  <div class="module active" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="toggle">
+        <input type="checkbox" id="mod_performance" checked>
+        <span class="toggle-track"></span>
+      </div>
+      <span class="module-title">Wertentwicklung (Grafik)</span>
+    </div>
+    <div class="module-desc">Historische Kursentwicklung, Vergleich mit Benchmark</div>
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <!-- 4. AUSGABE-FORMAT -->
+
+  <div class="section">
+    <div class="section-label"><span class="num">4</span> Ausgabe-Format</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Format</label>
+        <select id="outputFormat">
+          <option value="PDF (DIN A4, mehrseitig)" selected>PDF – DIN A4 mehrseitig</option>
+          <option value="PDF (DIN A3 Onepager)">PDF – DIN A3 Onepager</option>
+          <option value="Word-Dokument (DOCX)">Word-Dokument (DOCX)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Farbschema</label>
+        <div class="radio-pills">
+          <div class="radio-pill">
+            <input type="radio" name="colorscheme" id="cs_pro" value="professionell" checked>
+            <label for="cs_pro">Professionell</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="colorscheme" id="cs_dark" value="dunkel">
+            <label for="cs_dark">Dunkel</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="colorscheme" id="cs_light" value="hell">
+            <label for="cs_light">Hell</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. METADATEN -->
+
+  <div class="section">
+    <div class="section-label"><span class="num">5</span> Metadaten &amp; Disclaimer</div>
+    <div class="check-group">
+      <label class="check-item"><input type="checkbox" id="meta_query" checked> Anfrage-Text anhängen</label>
+      <label class="check-item"><input type="checkbox" id="meta_date" checked> Datum & Quellen</label>
+      <label class="check-item"><input type="checkbox" id="meta_model" checked> Modellversion</label>
+      <label class="check-item"><input type="checkbox" id="meta_disclaimer" checked> Disclaimer</label>
+    </div>
+  </div>
+
+  <!-- Extra Notes -->
+
+  <div class="section">
+    <div class="section-label"><span class="num">+</span> Zusätzliche Anweisungen</div>
+    <div class="field full">
+      <textarea id="extraNotes" rows="3" placeholder="Optionale Zusatzanweisungen, z.B. „Fokus auf Dividendentitel" oder „Vergleich mit MSCI World"" style="width:100%; resize:vertical;"></textarea>
+    </div>
+  </div>
+
+  <!-- Generate -->
+
+<button class="generate-btn" onclick="generatePrompt()">⚡ Prompt generieren</button>
+
+  <!-- Output -->
+
+  <div class="output-section" id="outputSection">
+    <div class="output-box">
+      <div class="output-header">
+        <span>✓ Fertiger Prompt</span>
+        <button class="copy-btn" onclick="copyPrompt()">Kopieren</button>
+      </div>
+      <div class="output-text" id="outputText"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleModule(el) {
+  const cb = el.querySelector('input[type="checkbox"]');
+  // Don't toggle if clicking inside module-options inputs
+  if (event.target.closest('.module-options')) return;
+  cb.checked = !cb.checked;
+  el.classList.toggle('active', cb.checked);
+}
+
+// Prevent toggle-track clicks from double-toggling
+document.querySelectorAll('.toggle').forEach(t => {
+  t.addEventListener('click', e => e.stopPropagation());
+  const cb = t.querySelector('input');
+  cb.addEventListener('change', () => {
+    const mod = t.closest('.module');
+    mod.classList.toggle('active', cb.checked);
+  });
+});
+
+// Prevent option clicks from toggling module
+document.querySelectorAll('.module-options').forEach(opt => {
+  opt.addEventListener('click', e => e.stopPropagation());
+});
+
+function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
+function checked(id) { return document.getElementById(id)?.checked; }
+function radioVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : '';
+}
+
+function generatePrompt() {
+  let lines = [];
+
+  lines.push('# INVESTMENT-ANALYSE – STANDARDPROMPT');
+  lines.push('');
+
+  // 1. Asset
+  lines.push('## 1. ASSET-DEFINITION');
+  lines.push(`Analysiere folgende(s) Investment(s):`);
+  lines.push(`- Typ: ${val('assetType')}`);
+  if (val('assetName')) lines.push(`- Bezeichnung(en): ${val('assetName')}`);
+  if (val('assetWKN')) lines.push(`- WKN/ISIN: ${val('assetWKN')}`);
+  if (val('assetFile')) lines.push(`- Datei: ${val('assetFile')}`);
+  lines.push('');
+
+  // 2. Profil
+  lines.push('## 2. INVESTOREN-PROFIL');
+  lines.push('- Perspektive: Deutscher Kleinanleger');
+  if (val('position')) lines.push(`- Aktuelle Position: ${val('position')}`);
+  if (val('sparplan')) {
+    let sp = `- Sparplan: ${val('sparplan')}`;
+    if (val('interval')) sp += ` / ${val('interval')}`;
+    lines.push(sp);
+  }
+  lines.push(`- Anlagehorizont: ${val('horizon')}`);
+  lines.push(`- Ausschüttungsstrategie: ${radioVal('distribution')}`);
+  lines.push('');
+
+  // 3. Module
+  lines.push('## 3. ANALYSE-MODULE');
+  lines.push('');
+
+  if (checked('mod_chances')) {
+    lines.push('[✓] CHANCEN UND RISIKEN');
+    lines.push('→ Allgemeine Bewertung der Investmentidee');
+    lines.push('');
+  }
+
+  if (checked('mod_analysts')) {
+    lines.push('[✓] ANALYSTENMEINUNGEN');
+    lines.push(`→ Konsens, Kursziele, aktuelle Einschätzungen`);
+    lines.push(`→ Scope: ${val('analystScope')}`);
+    lines.push('');
+  }
+
+  if (checked('mod_outlook')) {
+    lines.push('[✓] AUSBLICK / PROGNOSE');
+    lines.push(`→ Zeithorizonte: ${val('outlookYears')} Jahre`);
+    lines.push('→ Szenarien: Bull / Base / Bear Case');
+    lines.push('');
+  }
+
+  if (checked('mod_cluster')) {
+    lines.push('[✓] KLUMPENRISIKO / ÜBERSCHNEIDUNGSANALYSE');
+    lines.push('→ Matrix der Positionen über alle Fonds/ETFs');
+    lines.push(`→ Schwelle: Nur Positionen > ${val('clusterThreshold')}% Gesamtgewichtung`);
+    lines.push('→ Farbliche Markierung der Überschneidungen');
+    lines.push('→ Angabe der Gesamtgewichtung in % pro Position');
+    lines.push('');
+  }
+
+  if (checked('mod_topbottom')) {
+    const n = val('topCount');
+    lines.push('[✓] TOP- UND RISIKO-POSITIONEN');
+    lines.push(`→ Die ${n} stärksten/aussichtsreichsten Positionen`);
+    lines.push(`→ Die ${n} riskantesten Positionen`);
+    lines.push('');
+  }
+
+  if (checked('mod_resilience')) {
+    lines.push('[✓] RESILIENZTEST');
+    lines.push('→ Stressszenarien (Crash, Rezession, Zinswende)');
+    lines.push('→ Historische Drawdowns');
+    lines.push('');
+  }
+
+  if (checked('mod_ownership')) {
+    lines.push('[✓] EIGENTÜMERSTRUKTUR');
+    lines.push('→ Institutionelle vs. private Anleger');
+    lines.push('→ Insider-Transaktionen');
+    lines.push(`→ Scope: ${val('ownerScope')}`);
+    lines.push('');
+  }
+
+  if (checked('mod_metrics')) {
+    lines.push('[✓] KENNZAHLEN-TABELLE');
+    lines.push('→ Alle wichtigen Indizes mit ausführlicher Erklärung');
+    lines.push('→ KGV, KBV, Dividendenrendite, Volatilität, etc.');
+    lines.push(`→ Scope: ${val('metricsScope')}`);
+    lines.push('');
+  }
+
+  if (checked('mod_performance')) {
+    lines.push('[✓] WERTENTWICKLUNG (GRAFIK)');
+    lines.push('→ Historische Kursentwicklung');
+    lines.push('→ Vergleich mit Benchmark');
+    lines.push('');
+  }
+
+  // 4. Format
+  lines.push('## 4. AUSGABE-FORMAT');
+  lines.push(`- Format: ${val('outputFormat')}`);
+  lines.push('- Sprache: Deutsch');
+  lines.push('- Tabellen und Grafiken: Ja');
+  lines.push(`- Farbschema: ${radioVal('colorscheme')}`);
+  lines.push('');
+
+  // 5. Meta
+  lines.push('## 5. METADATEN & DISCLAIMER');
+  if (checked('meta_query')) lines.push('- Anfrage-Text als Metadaten anhängen');
+  if (checked('meta_date')) lines.push('- Datum und Quellen dokumentieren');
+  if (checked('meta_model')) lines.push('- Claude-Modellversion angeben');
+  if (checked('meta_disclaimer')) lines.push('- Standard-Disclaimer: Keine Anlageberatung');
+  lines.push('');
+
+  // Extra
+  if (val('extraNotes')) {
+    lines.push('## ZUSÄTZLICHE ANWEISUNGEN');
+    lines.push(val('extraNotes'));
+    lines.push('');
+  }
+
+  const prompt = lines.join('\n');
+  document.getElementById('outputText').textContent = prompt;
+  const outputSection = document.getElementById('outputSection');
+  outputSection.classList.add('visible');
+  outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyPrompt() {
+  const text = document.getElementById('outputText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Kopiert!';
+    btn.style.background = 'var(--green)';
+    btn.style.color = 'var(--bg)';
+    setTimeout(() => {
+      btn.textContent = 'Kopieren';
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--green)';
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
