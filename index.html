@@ -435,6 +435,29 @@
   }
   .copy-btn:hover, .copy-btn.done { background: var(--green); color: var(--bg); }
 
+  .send-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .send-row .send-label { font-size: 13px; color: var(--text-dim); margin-right: 4px; }
+  .send-btn {
+    font: 600 13px var(--font-sans);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .send-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .send-status { flex-basis: 100%; font-size: 12.5px; color: var(--text-muted); min-height: 1em; }
+  .send-status:empty { display: none; }
+
   .output-text {
     padding: 20px;
     font-family: var(--font-mono);
@@ -738,6 +761,14 @@
         </div>
       </div>
       <div class="output-text" id="outputText"></div>
+      <div class="send-row">
+        <span class="send-label">Direkt öffnen in:</span>
+        <button class="send-btn" type="button" data-ai="claude">Claude</button>
+        <button class="send-btn" type="button" data-ai="chatgpt">ChatGPT</button>
+        <button class="send-btn" type="button" data-ai="grok">Grok</button>
+        <button class="send-btn" type="button" data-ai="gemini">Gemini</button>
+        <p class="send-status" id="sendStatus" role="status"></p>
+      </div>
     </div>
     <div class="tips">
       <strong>Tipps für bessere Ergebnisse</strong>
@@ -1095,6 +1126,7 @@ function generatePrompt() {
   }
 
   const prompt = L.join('\n').trim();
+  $('sendStatus').textContent = '';
   $('outputText').textContent = prompt;
   const words = prompt.split(/\s+/).length;
   $('stats').textContent = `· ${words.toLocaleString('de-DE')} Wörter · ${prompt.length.toLocaleString('de-DE')} Zeichen`;
@@ -1112,20 +1144,65 @@ function flash(btn, text) {
   setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1800);
 }
 
-function copyPrompt() {
-  const text = $('outputText').textContent;
-  const btn = $('copyBtn');
+function writeClipboard(text) {
   const fallback = () => {
     const ta = document.createElement('textarea');
     ta.value = text;
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand('copy'); flash(btn, '✓ Kopiert'); } catch (e) { flash(btn, 'Fehler'); }
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
     ta.remove();
+    return ok;
   };
   if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text).then(() => flash(btn, '✓ Kopiert'), fallback);
-  } else fallback();
+    return navigator.clipboard.writeText(text).then(() => true, fallback);
+  }
+  return Promise.resolve(fallback());
+}
+
+function copyPrompt() {
+  const btn = $('copyBtn');
+  writeClipboard($('outputText').textContent).then(ok => flash(btn, ok ? '✓ Kopiert' : 'Fehler'));
+}
+
+/* ───────── An KI-Dienst übergeben ───────── */
+// base: Startseite des Dienstes; param: URL-Parameter zum Vorbefüllen (null = nicht unterstützt)
+const AI_TARGETS = {
+  claude:  { name: 'Claude',  base: 'https://claude.ai/new',          param: 'q' },
+  chatgpt: { name: 'ChatGPT', base: 'https://chatgpt.com/',           param: 'q' },
+  grok:    { name: 'Grok',    base: 'https://grok.com/',              param: 'q' },
+  gemini:  { name: 'Gemini',  base: 'https://gemini.google.com/app',  param: null }
+};
+// Sehr lange URLs werden von manchen Diensten abgewiesen – darüber nur Zwischenablage
+const MAX_URL_LENGTH = 12000;
+
+function sendToAI(key) {
+  const t = AI_TARGETS[key];
+  const text = $('outputText').textContent;
+  if (!t || !text) return;
+
+  let url = t.base;
+  let prefilled = false;
+  if (t.param) {
+    const candidate = `${t.base}?${t.param}=${encodeURIComponent(text)}`;
+    if (candidate.length <= MAX_URL_LENGTH) { url = candidate; prefilled = true; }
+  }
+
+  // Fenster synchron öffnen, damit der Popup-Blocker nicht greift; Zwischenablage parallel als Rückfallebene
+  // Ohne 'noopener'-Feature, da window.open sonst immer null liefert; opener wird danach gekappt
+  const win = window.open(url, '_blank');
+  if (win) win.opener = null;
+  const status = $('sendStatus');
+  writeClipboard(text).then(copied => {
+    const paste = copied ? 'Der Prompt ist in der Zwischenablage – dort einfach einfügen (Strg+V bzw. ⌘V).' : 'Bitte den Prompt oben über „Kopieren" übernehmen.';
+    let msg;
+    if (prefilled) msg = `${t.name} wurde mit dem Prompt geöffnet. Falls das Eingabefeld leer bleibt: ${paste}`;
+    else if (t.param) msg = `${t.name} wurde geöffnet. Der Prompt ist zu lang für die direkte Übergabe. ${paste}`;
+    else msg = `${t.name} wurde geöffnet. ${t.name} unterstützt keine direkte Übergabe. ${paste}`;
+    if (win === null) msg = `Das neue Fenster wurde blockiert. Bitte Pop-ups für diese Seite erlauben. ${paste}`;
+    status.textContent = msg;
+  });
 }
 
 function downloadPrompt() {
@@ -1177,6 +1254,7 @@ document.querySelector('.container').addEventListener('change', saveState);
 $('generateBtn').addEventListener('click', generatePrompt);
 $('copyBtn').addEventListener('click', copyPrompt);
 $('downloadBtn').addEventListener('click', downloadPrompt);
+document.querySelectorAll('[data-ai]').forEach(b => b.addEventListener('click', () => sendToAI(b.dataset.ai)));
 $('resetBtn').addEventListener('click', resetAll);
 </script>
 </body>
