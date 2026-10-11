@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datenschutz</title>
+<meta name="description" content="Datenschutzerklärung zum Investment-Prompt-Generator.">
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #0c0f1a;
+    --surface: #141829;
+    --border: #2a305a;
+    --text: #e4e6f0;
+    --text-dim: #9a9fc4;
+    --text-muted: #6a6f9e;
+    --accent: #6366f1;
+    --accent-bright: #818cf8;
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f5f6fb;
+      --surface: #ffffff;
+      --border: #d6d9ea;
+      --text: #1a1d33;
+      --text-dim: #4d5275;
+      --text-muted: #80859f;
+      --accent: #4f46e5;
+      --accent-bright: #4f46e5;
+      color-scheme: light;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  .container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .back {
+    display: inline-block;
+    font-size: 14px;
+    color: var(--text-dim);
+    text-decoration: none;
+    margin-bottom: 28px;
+  }
+  .back:hover { color: var(--accent-bright); }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 6vw, 38px);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .lead { color: var(--text-dim); margin-bottom: 32px; }
+
+  section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 18px;
+  }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-bright);
+    margin-bottom: 12px;
+  }
+
+  h3 { font-size: 15px; margin: 18px 0 6px; }
+
+  p, li { font-size: 15px; color: var(--text); }
+  p + p { margin-top: 10px; }
+  ul { margin: 8px 0 0 20px; display: grid; gap: 4px; }
+  a { color: var(--accent-bright); }
+  .muted { color: var(--text-muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px 60px; }
+    section { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+<main class="container">
+
+  <a class="back" href="index.html">← Zurück zum Prompt-Generator</a>
+
+  <h1>Datenschutz</h1>
+  <p class="lead">Kurz gesagt: Diese Seite setzt keine Cookies, nutzt kein Tracking und überträgt deine Eingaben nirgendwohin.</p>
+
+  <section id="datenschutz">
+    <h2>1. Verantwortlicher</h2>
+    <p>Verantwortlich für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist der im <a href="#impressum">Impressum</a> genannte Betreiber.</p>
+  </section>
+
+  <section>
+    <h2>2. Überblick</h2>
+    <ul>
+      <li>Keine Cookies, keine Analyse- oder Tracking-Werkzeuge, keine Werbung.</li>
+      <li>Keine externen Schriftarten, Skripte oder sonstigen Inhalte von Drittanbietern.</li>
+      <li>Kein eigener Server: Die Seite besteht aus statischen Dateien, die vollständig in deinem Browser ausgeführt werden.</li>
+      <li>Formulareingaben werden nicht an den Betreiber oder Dritte übertragen.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Hosting</h2>
+    <p>Diese Website wird über <strong>GitHub Pages</strong> bereitgestellt, einen Dienst der GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA.</p>
+    <p>Beim Aufruf der Seite verarbeitet GitHub technisch notwendige Zugriffsdaten, insbesondere die IP-Adresse, Datum und Uhrzeit des Abrufs, die aufgerufene Datei sowie Browser- und Betriebssysteminformationen. Dies dient der Auslieferung und der Sicherheit des Angebots. Der Betreiber hat auf diese Daten keinen Zugriff.</p>
+    <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und zuverlässigen Bereitstellung der Website). Dabei können Daten in die USA übermittelt werden. GitHub stützt solche Übermittlungen nach eigenen Angaben auf das EU-US Data Privacy Framework bzw. auf Standardvertragsklauseln.</p>
+    <p>Weitere Informationen: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">Datenschutzerklärung von GitHub</a>.</p>
+  </section>
+
+  <section>
+    <h2>4. Lokale Speicherung im Browser</h2>
+    <p>Damit deine Eingaben beim nächsten Besuch erhalten bleiben, speichert die Seite sie im lokalen Speicher deines Browsers (<em>localStorage</em>). Diese Daten verlassen dein Gerät nicht und sind für den Betreiber nicht einsehbar.</p>
+    <p>Die Speicherung ist für die von dir genutzte Funktion erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst die Daten jederzeit über die Schaltfläche <strong>„Zurücksetzen"</strong> oder über die Einstellungen deines Browsers löschen.</p>
+    <p>Kopieren in die Zwischenablage und der Download als Textdatei finden ebenfalls ausschließlich lokal auf deinem Gerät statt.</p>
+  </section>
+
+  <section>
+    <h2>5. Nutzung des erzeugten Prompts</h2>
+    <p>Die Seite sendet den Prompt nicht selbst an Claude oder einen anderen KI-Dienst. Wenn du ihn dort einfügst, gelten die Datenschutzbestimmungen des jeweiligen Anbieters.</p>
+    <p>Gib nach Möglichkeit keine Angaben ein, die dich identifizieren, zum Beispiel Name, Kontonummern oder Depotnummern.</p>
+  </section>
+
+  <section>
+    <h2>6. Deine Rechte</h2>
+    <p>Soweit personenbezogene Daten verarbeitet werden, hast du das Recht auf:</p>
+    <ul>
+      <li>Auskunft (Art. 15 DSGVO)</li>
+      <li>Berichtigung (Art. 16 DSGVO)</li>
+      <li>Löschung (Art. 17 DSGVO)</li>
+      <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+      <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+      <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+      <li>Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77 DSGVO)</li>
+    </ul>
+    <p>Da der Betreiber selbst keine personenbezogenen Daten speichert, richten sich Anfragen zu den Zugriffsdaten des Hostings in der Regel an GitHub.</p>
+  </section>
+
+  <!--
+    ════════════════════════════════════════════════════════════════
+    IMPRESSUM – VORBEREITET, NOCH NICHT AKTIV
+    1. Platzhalter in [eckigen Klammern] ersetzen.
+    2. Das Attribut "hidden" an <section id="impressum"> entfernen.
+    3. In index.html den auskommentierten Impressum-Link im Footer aktivieren.
+    Hinweis: Eine ladungsfähige Anschrift ist Pflicht, ein Postfach genügt nicht.
+    Alternativ kann ein Impressums- bzw. c/o-Adressdienst genutzt werden.
+    ════════════════════════════════════════════════════════════════
+  -->
+  <section id="impressum" hidden>
+    <h2>Impressum</h2>
+
+    <h3>Angaben gemäß § 5 DDG</h3>
+    <p>
+      [Vorname Nachname]<br>
+      [Straße Hausnummer]<br>
+      [PLZ Ort]<br>
+      [Land]
+    </p>
+
+    <h3>Kontakt</h3>
+    <p>E-Mail: [E-Mail-Adresse]</p>
+
+    <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+    <p>
+      [Vorname Nachname]<br>
+      [Anschrift wie oben]
+    </p>
+
+    <h3>Haftungshinweis</h3>
+    <p>Die Inhalte dieser Seite wurden mit Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit und Aktualität wird keine Gewähr übernommen. Der Prompt-Generator und die damit erzeugten Texte stellen keine Anlage-, Rechts- oder Steuerberatung dar. Für die Inhalte verlinkter externer Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
+  </section>
+
+  <p class="muted">Stand: Oktober 2026</p>
+</main>
+</body>
+</html>

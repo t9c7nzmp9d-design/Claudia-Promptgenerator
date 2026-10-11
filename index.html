@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Investment-Prompt-Generator</title>
 <meta name="description" content="Erstellt strukturierte Prompts für fundierte Investment-Analysen mit Claude – für Einzelwerte, ETFs, Fonds und ganze Depots.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0c0f1a;
@@ -29,6 +26,9 @@
     --orange: #fb923c;
     --orange-dim: rgba(251,146,60,0.12);
     --on-accent: #ffffff;
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
     --radius: 12px;
     --radius-sm: 8px;
     color-scheme: dark;
@@ -61,7 +61,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-sans);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -93,7 +93,7 @@
 
   .tag {
     display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -106,7 +106,7 @@
   }
 
   .header h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     font-size: clamp(28px, 6vw, 42px);
     font-weight: 800;
     line-height: 1.15;
@@ -132,7 +132,7 @@
   }
 
   .preset-btn {
-    font: 500 13px 'DM Sans', sans-serif;
+    font: 500 13px var(--font-sans);
     color: var(--text-dim);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -153,7 +153,7 @@
   }
 
   .section-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 2.5px;
     text-transform: uppercase;
@@ -204,7 +204,7 @@
   .field input[type="text"],
   .field select,
   .field textarea {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-size: 14px;
     color: var(--text);
     background: var(--surface-2);
@@ -278,7 +278,7 @@
   }
 
   .badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 500;
     letter-spacing: .5px;
@@ -366,7 +366,7 @@
   .generate-btn {
     flex: 1;
     padding: 16px;
-    font: 700 16px 'DM Sans', sans-serif;
+    font: 700 16px var(--font-sans);
     letter-spacing: .5px;
     color: var(--on-accent);
     background: linear-gradient(135deg, var(--accent), #4338ca);
@@ -379,7 +379,7 @@
   .generate-btn:active { transform: translateY(0); }
 
   .ghost-btn {
-    font: 600 13px 'DM Sans', sans-serif;
+    font: 600 13px var(--font-sans);
     color: var(--text-dim);
     background: transparent;
     border: 1px solid var(--border);
@@ -413,7 +413,7 @@
   }
 
   .output-header .label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -424,7 +424,7 @@
   .output-buttons { display: flex; gap: 8px; }
 
   .copy-btn {
-    font: 600 13px 'DM Sans', sans-serif;
+    font: 600 13px var(--font-sans);
     color: var(--green);
     background: transparent;
     border: 1px solid var(--green);
@@ -437,7 +437,7 @@
 
   .output-text {
     padding: 20px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 12.5px;
     line-height: 1.7;
     color: var(--text);
@@ -457,6 +457,9 @@
   }
   .tips strong { color: var(--text); }
   .tips ul { margin: 8px 0 0 18px; display: grid; gap: 4px; }
+
+  .footer-note a { color: var(--text-dim); }
+  .footer-note a:hover { color: var(--accent-bright); }
 
   .footer-note {
     margin-top: 28px;
@@ -747,7 +750,12 @@
     </div>
   </div>
 
-  <p class="footer-note">Alle Eingaben bleiben in deinem Browser. Der erzeugte Prompt ist keine Anlageberatung.</p>
+  <p class="footer-note">
+    Alle Eingaben bleiben in deinem Browser. Der erzeugte Prompt ist keine Anlageberatung.<br>
+    <a href="datenschutz.html">Datenschutz</a>
+    <!-- Sobald das Impressum in datenschutz.html ausgefüllt ist, diese Zeile aktivieren:
+    · <a href="datenschutz.html#impressum">Impressum</a> -->
+  </p>
 </div>
 
 <script>
